@@ -4,13 +4,13 @@ import { ComponentPropsWithoutRef } from "react";
 import { cn } from "../lib/cva";
 
 type AvatarProps = {
-	username: string;
-	src?: string;
+	name: string;
+	src: string | undefined;
 	alt?: string;
 };
 
 export const Avatar = ({
-	username,
+	name,
 	className,
 	...props
 }: AvatarProps & ComponentPropsWithoutRef<"div">) => {
@@ -21,7 +21,7 @@ export const Avatar = ({
 				className
 			)}
 		>
-			{props.src ? <img {...props} alt="user avatart" /> : username[0]}
+			{props.src ? <img {...props} alt={`${name} profile image`} /> : name[0]}
 		</div>
 	);
 };

@@ -1,12 +1,13 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { ZOD } from "../../../lib/ZOD";
+import { logIn } from "../../../server/supabase";
 import { Btn } from "../../../ui/Btn";
 import { Input } from "../../../ui/Input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { createUser } from "../../../server/firebase";
-import { ZOD } from "../../../lib/ZOD";
-import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 type LoginFormInput = Zod.infer<typeof ZOD.auth.login>;
 
@@ -24,12 +25,14 @@ export const LoginForm = ({
 		resolver: zodResolver(ZOD.auth.login),
 	});
 	const submitHandler = async (values: LoginFormInput) => {
-		await createUser(values)
-			.then(() => {
-				nav("/");
+		await logIn(values)
+			.then((res) => {
+				if (res.error !== null) {
+					nav("/");
+				}
 			})
 			.catch((err) => {
-				console.log(err);
+				toast.error(err.message);
 			});
 	};
 	return (

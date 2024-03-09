@@ -1,17 +1,17 @@
+import { lazy } from "react";
 import {
 	Navigate,
 	RouterProvider,
 	createBrowserRouter,
 } from "react-router-dom";
 import { useAuthContext } from "./hooks/useAuthContext";
-import { lazy } from "react";
 
 const Register = lazy(() => import("./pages/register/Page"));
 const Home = lazy(() => import("./pages/home/Page"));
 const Master = lazy(() => import("./layout/Master"));
 
 export const App = () => {
-	const { currentUser } = useAuthContext();
+	const { session } = useAuthContext();
 	const router = createBrowserRouter([
 		{
 			element: <Master />,
@@ -19,12 +19,11 @@ export const App = () => {
 			children: [
 				{
 					path: "/register",
-					element: currentUser ? <Navigate to="/" /> : <Register />,
-					// element: <Register />,
+					element: session ? <Navigate to={"/"} /> : <Register />,
 				},
 				{
 					path: "/",
-					element: currentUser ? <Home /> : <Navigate to="/register" />,
+					element: session ? <Home /> : <Navigate to={"/register"} />,
 				},
 			],
 		},

@@ -13,7 +13,7 @@ export const variants = cva(
   {
     variants: {
       variant: {
-        fill: " bg-variant  before:absolute before:inset-0 before:bg-white/20  before:opacity-0 before:transition-opacity hover:before:opacity-100 ",
+        fill: " bg-variant rounded-sm before:absolute before:inset-0 before:bg-white/20  before:opacity-0 before:transition-opacity hover:before:opacity-100 ",
         outline:
           " ring-solid  duration-700  ring-2 ring-variant hover:bg-variant active:bg-variant     ",
         ghost:

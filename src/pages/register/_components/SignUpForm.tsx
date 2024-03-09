@@ -1,10 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { ZOD } from "../../../lib/ZOD";
-import { createUser, storeUser } from "../../../server/firebase";
+import { signUp, supabase } from "../../../server/supabase";
 import { Btn } from "../../../ui/Btn";
 import { Input } from "../../../ui/Input";
-import { useNavigate } from "react-router-dom";
 
 type SignUpFormInput = Zod.infer<typeof ZOD.auth.signup>;
 export const SignUpForm = ({
@@ -21,19 +22,26 @@ export const SignUpForm = ({
 		resolver: zodResolver(ZOD.auth.signup),
 	});
 	const submitHandler = async (values: SignUpFormInput) => {
-		await createUser(values).then(async (res) => {
-			const user = res.user;
-			await storeUser({
-				userId: user.uid,
-				username: values.username,
-				email: values.email,
-			}).catch((err) => console.error(err));
-			nav("/");
+		await signUp(values).then(async (res) => {
+			if (res.error?.message)
+				return toast.error(res.error?.message ?? "user already exists");
+			toast.success("a verification link has been send to your email");
+			await supabase
+				.from("users")
+				.insert([
+					{
+						id: res.data.user?.id,
+						username: values.username,
+						email: values.email,
+					},
+				])
+				.select()
+				.then(() => {
+					nav("/");
+				});
 		});
-		// .catch((err) => {
-		// 	console.log(err);
-		// });
 	};
+
 	return (
 		<form
 			onSubmit={handleSubmit(submitHandler)}
