@@ -2,7 +2,7 @@ import { useDebouncedValue, useInputState } from "@mantine/hooks";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import useSWR from "swr";
-import { useAuthContext } from "../hooks/useAuthContext";
+import { useUserContext } from "../hooks/useUserContext";
 import { toChatId } from "../lib/helper";
 import { supabase } from "../server/supabase";
 import { Icon } from "../ui/Icons";
@@ -10,15 +10,14 @@ import { Input } from "../ui/Input";
 import { Avatar } from "./Avatar";
 
 export const SearchBar = () => {
-	const { user } = useAuthContext();
+	const { user } = useUserContext();
 	const [isOpen, setisOpen] = useState(false);
 	const [name, setName] = useInputState("");
 	const [debouncedName] = useDebouncedValue(name, 500);
 	const [_, setsearchParams] = useSearchParams();
 	const fetcher = async (val: string) => {
-		console.log(val);
 		return await supabase
-			.from("users")
+			.from("User")
 			.select(`id , username , image`)
 			.limit(5)
 			.like("username", `%${val}%`)
@@ -26,8 +25,9 @@ export const SearchBar = () => {
 	};
 	const { data, isLoading } = useSWR(debouncedName, fetcher, {
 		keepPreviousData: true,
+		refreshInterval: 0,
+		revalidateIfStale: false,
 	});
-	console.log(data);
 	const results = data?.data ?? [];
 	return (
 		<>

@@ -10,7 +10,7 @@ export const Input = forwardRef<
 			ref={forwardedRef}
 			{...props}
 			className={cn(
-				"bg-neutral-revert/10 flex-1  p-2 placeholder:capitalize border-neutral-revert ",
+				"bg-neutral-revert/10 flex-1   p-2 placeholder:capitalize border-neutral-revert ",
 				className
 			)}
 		/>

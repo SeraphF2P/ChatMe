@@ -2,6 +2,7 @@ import { ChatsSection } from "../../_components/ChatsSection";
 import { Header } from "../../_components/Header";
 import { OffCanves } from "../../_components/OffCanvas";
 import { UserProvider } from "../../contexts/UserProvider";
+
 export default function Home() {
 	return (
 		<UserProvider>

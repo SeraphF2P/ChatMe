@@ -9,26 +9,107 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      users: {
+      _chats: {
         Row: {
-          chats: string[]
-          created_at: string | null
+          chat: string
+          user: string
+        }
+        Insert: {
+          chat: string
+          user: string
+        }
+        Update: {
+          chat?: string
+          user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "_chats_A_fkey"
+            columns: ["chat"]
+            isOneToOne: false
+            referencedRelation: "Chat"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "_chats_B_fkey"
+            columns: ["user"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      Chat: {
+        Row: {
+          created_At: string
+          id: string
+        }
+        Insert: {
+          created_At?: string
+          id: string
+        }
+        Update: {
+          created_At?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      Message: {
+        Row: {
+          chatId: string
+          created_At: string
+          id: string
+          text: string
+          userId: string
+        }
+        Insert: {
+          chatId: string
+          created_At?: string
+          id?: string
+          text: string
+          userId: string
+        }
+        Update: {
+          chatId?: string
+          created_At?: string
+          id?: string
+          text?: string
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Message_chatId_fkey"
+            columns: ["chatId"]
+            isOneToOne: false
+            referencedRelation: "Chat"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Message_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      User: {
+        Row: {
+          created_At: string
           email: string
           id: string
           image: string | null
           username: string
         }
         Insert: {
-          chats: string[]
-          created_at?: string | null
+          created_At?: string
           email: string
-          id?: string
+          id: string
           image?: string | null
           username: string
         }
         Update: {
-          chats?: string[]
-          created_at?: string | null
+          created_At?: string
           email?: string
           id?: string
           image?: string | null

@@ -4,6 +4,7 @@ import { AnimatePresence, motion as m } from "framer-motion";
 import { useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import useScrollLock from "../hooks/useScrollLock";
+import { useUserContext } from "../hooks/useUserContext";
 import { signout } from "../server/supabase";
 import { Btn } from "../ui/Btn";
 import { Icon } from "../ui/Icons";
@@ -14,7 +15,8 @@ export const Menu = () => {
 		setisOpen(false);
 	});
 	useScrollLock(isOpen);
-	const { user } = useAuthContext();
+	const { session } = useAuthContext();
+	const { user } = useUserContext();
 
 	return (
 		<>
@@ -65,7 +67,7 @@ export const Menu = () => {
 								<li className=" text-xl capitalize">
 									<a href="/">placeholder</a>
 								</li>
-								{user && (
+								{session && (
 									<li className=" text-xl capitalize">
 										<button onPointerDown={() => signout()}>sign out</button>
 									</li>

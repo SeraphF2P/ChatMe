@@ -3,11 +3,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { PulseLoader } from "react-spinners";
+import { toast } from "react-toastify";
 import { ZOD } from "../../../lib/ZOD";
 import { logIn } from "../../../server/supabase";
 import { Btn } from "../../../ui/Btn";
 import { Input } from "../../../ui/Input";
-import { toast } from "react-toastify";
 
 type LoginFormInput = Zod.infer<typeof ZOD.auth.login>;
 
@@ -20,15 +21,18 @@ export const LoginForm = ({
 	const {
 		handleSubmit,
 		register,
-		formState: { isLoading },
+		formState: { isSubmitting, errors },
 	} = useForm<LoginFormInput>({
 		resolver: zodResolver(ZOD.auth.login),
 	});
 	const submitHandler = async (values: LoginFormInput) => {
 		await logIn(values)
 			.then((res) => {
-				if (res.error !== null) {
+				if (res.error == null) {
+					toast.success("Successfully logged in");
 					nav("/");
+				} else {
+					toast.error(res.error.message);
 				}
 			})
 			.catch((err) => {
@@ -64,11 +68,23 @@ export const LoginForm = ({
 					don't have an account ? sign up
 				</Btn>
 				<Btn
-					disabled={isLoading}
+					disabled={isSubmitting}
 					type="submit"
-					className="w-full disabled:animate-pulse "
+					onClick={() => {
+						if (errors) {
+							const errMsgs = Object.entries(errors).map(
+								(err) => err[1].message
+							);
+							toast.error(errMsgs[0]);
+						}
+					}}
+					className="w-full h-10 disabled:animate-pulse "
 				>
-					submit
+					{isSubmitting ? (
+						<PulseLoader color="rgb(var(--neutral-revert))" />
+					) : (
+						"submit"
+					)}
 				</Btn>
 			</div>
 		</form>

@@ -26,23 +26,25 @@ const Card = (props: ComponentProps<"section">) => {
 	return (
 		<m.section
 			initial={{
-				y: 100,
+				scale: 0.8,
 				opacity: 0,
 			}}
 			animate={{
-				y: 0,
+				scale: 1,
 				opacity: 1,
 			}}
 			exit={{
-				y: -100,
+				scale: 0.8,
 				opacity: 0,
 			}}
-			className=" absolute   flex flex-col rounded-sm px-4   bg-neutral "
+			transition={{ ease: "circInOut" }}
+			className=" absolute  isolate  flex flex-col rounded-sm px-4    "
 		>
-			<div className=" absolute -inset-1   rounded-md bg-primary  -z-10 blur"></div>
-			<div className=" absolute -inset-1   rounded-md -z-10  overflow-hidden">
+			<div className="  absolute -inset-1   rounded-md bg-primary  -z-20 blur"></div>
+			<div className=" absolute -inset-1   rounded-md -z-20  overflow-hidden">
 				<div className=" absolute inset-10 -left-20 -right-20    animate-[spin_5s_infinite_linear]    bg-rose-500 blur-2xl  -z-10 "></div>
 			</div>
+			<div className="  absolute inset-0   rounded-sm bg-neutral  -z-10 "></div>
 			{props.children}
 		</m.section>
 	);

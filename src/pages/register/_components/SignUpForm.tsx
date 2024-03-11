@@ -1,33 +1,32 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ZOD } from "../../../lib/ZOD";
 import { signUp, supabase } from "../../../server/supabase";
 import { Btn } from "../../../ui/Btn";
 import { Input } from "../../../ui/Input";
-
+import { PulseLoader } from "react-spinners";
 type SignUpFormInput = Zod.infer<typeof ZOD.auth.signup>;
 export const SignUpForm = ({
 	sethasAccount,
 }: {
 	sethasAccount: (val: boolean) => void;
 }) => {
-	const nav = useNavigate();
 	const {
 		handleSubmit,
 		register,
-		formState: { isLoading },
+		reset,
+		formState: { errors, isSubmitting },
 	} = useForm<SignUpFormInput>({
 		resolver: zodResolver(ZOD.auth.signup),
 	});
 	const submitHandler = async (values: SignUpFormInput) => {
 		await signUp(values).then(async (res) => {
-			if (res.error?.message)
-				return toast.error(res.error?.message ?? "user already exists");
-			toast.success("a verification link has been send to your email");
+			if (res.error?.message) {
+				return toast.error(res.error?.message);
+			}
 			await supabase
-				.from("users")
+				.from("User")
 				.insert([
 					{
 						id: res.data.user?.id,
@@ -37,7 +36,8 @@ export const SignUpForm = ({
 				])
 				.select()
 				.then(() => {
-					nav("/");
+					reset();
+					toast.success("a verification link has been send to your email");
 				});
 		});
 	};
@@ -45,7 +45,7 @@ export const SignUpForm = ({
 	return (
 		<form
 			onSubmit={handleSubmit(submitHandler)}
-			className=" flex flex-col space-y-4 py-4"
+			className=" flex flex-col text-neutral-revert space-y-4 py-4"
 		>
 			<Input
 				autoComplete="username"
@@ -81,11 +81,23 @@ export const SignUpForm = ({
 					already have an account ? log in
 				</Btn>
 				<Btn
-					disabled={isLoading}
+					disabled={isSubmitting}
 					type="submit"
-					className="w-full disabled:animate-pulse "
+					onClick={() => {
+						if (errors) {
+							const errMsgs = Object.entries(errors).map(
+								(err) => err[1].message
+							);
+							toast.error(errMsgs[0]);
+						}
+					}}
+					className="w-full h-10 disabled:animate-pulse "
 				>
-					submit
+					{isSubmitting ? (
+						<PulseLoader color="rgb(var(--neutral-revert))" />
+					) : (
+						"submit"
+					)}
 				</Btn>
 			</div>
 		</form>

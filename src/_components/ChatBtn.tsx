@@ -1,33 +1,45 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useAuthContext } from "../hooks/useAuthContext";
-import { getChaters } from "../lib/helper";
-import { Tables } from "../server/database.types";
+import useSWRImmutable from "swr/immutable";
+import { ChatType, MessageType } from "../contexts/UserProvider";
 import { supabase } from "../server/supabase";
 import { Btn } from "../ui/Btn";
 import { Avatar } from "./Avatar";
-type ChatBtnProps = {
-	chatId: string;
-};
 
-export const ChatBtn = ({ chatId }: ChatBtnProps) => {
+export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 	const [_, setsearchParams] = useSearchParams();
-	const { user } = useAuthContext();
-	const [partner, setPartner] = useState<Tables<"users">>();
+	const { data } = useSWRImmutable("lastMessage-" + chatId, async () => {
+		return await supabase
+			.from("Message")
+			.select("*")
+			.order("created_At", { ascending: false })
+			.limit(1)
+			.eq("chatId", chatId)
+			.single();
+	});
+	const [lastMsg, setlastMsg] = useState<MessageType>();
 	useEffect(() => {
-		const fetcher = async () => {
-			const [u1, u2] = getChaters(chatId);
-			const partnerId = u1 === user?.id ? u2 : u1;
-			const partner = await supabase
-				.from("users")
-				.select("*")
-				.eq("id", partnerId);
-			setPartner(partner.data ? partner.data[0] : undefined);
-		};
-		fetcher();
-	}, [chatId]);
+		const channel = supabase
+			.channel("chatRoom-" + chatId)
+			.on(
+				"postgres_changes",
+				{
+					event: "INSERT",
+					schema: "public",
+					table: `Message`,
+					filter: `chatId=eq.${chatId}`,
+				},
+				(payload) => {
+					setlastMsg(payload.new as MessageType);
+				}
+			)
+			.subscribe();
 
-	const lastMessage = "lastMessage";
+		return () => {
+			channel.unsubscribe();
+		};
+	}, [chatId]);
+	const lastMessage = lastMsg ?? data?.data;
 	return (
 		<Btn
 			onClick={() => setsearchParams(new URLSearchParams({ chatId }))}
@@ -44,9 +56,15 @@ export const ChatBtn = ({ chatId }: ChatBtnProps) => {
 				<p className=" capitalize truncate text-left text-lg">
 					{partner?.username}
 				</p>
-				<p className=" capitalize truncate text-left text-sm text-neutral-revert/80">
-					{lastMessage}
-				</p>
+				<div className="  h-5 flex">
+					{lastMessage?.text && (
+						<p className=" capitalize truncate text-left text-sm text-neutral-revert/80">
+							{`${
+								lastMessage?.userId === partner.id ? partner.username : "you"
+							} : ${lastMessage?.text}`}
+						</p>
+					)}
+				</div>
 			</div>
 		</Btn>
 	);

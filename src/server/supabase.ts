@@ -8,7 +8,7 @@ export const supabase = createClient(
 
 export const signUp = async ({ email, password }: { email: string, password: string }) => {
 
-  return await supabase.auth.signUp({ email, password, phone: "-" })
+  return await supabase.auth.signUp({ email, password, phone: "-", })
 }
 
 export const logIn = async ({ email, password }: { email: string, password: string }) => {
@@ -17,7 +17,7 @@ export const logIn = async ({ email, password }: { email: string, password: stri
 export const signout = async () => {
   return await supabase.auth.signOut()
 }
-export const createUser = async (params: TablesInsert<"users">) => await supabase.from("users").insert({
+export const createUser = async (params: TablesInsert<"User">) => await supabase.from("users").insert({
   username: params.username,
   email: params.email,
 });

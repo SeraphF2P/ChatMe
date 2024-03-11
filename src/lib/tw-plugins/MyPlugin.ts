@@ -12,6 +12,10 @@ export const MyPlugin = plugin(
         "--success": "110,231,183", //? emerald 300,
         "--info": "8,145,178" //? cyan 600,
       },
+      "::-ms-reveal": {
+        filter: "invert(100%)"
+      }
+
     });
     addBase({
 
