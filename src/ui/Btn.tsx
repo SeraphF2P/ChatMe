@@ -7,24 +7,13 @@ export interface BtnProps
 		variantsType {}
 
 export const Btn = forwardRef<HTMLButtonElement, BtnProps>(
-	(
-		{
-			className,
-			variant,
-			shape,
-			children,
-			deActivated,
-			type = "button",
-			...props
-		},
-		ref
-	) => {
+	({ className, variant, children, type = "button", ...props }, ref) => {
 		return (
 			<button
 				ref={ref}
 				type={type}
 				{...props}
-				className={cn(variants({ variant, shape, deActivated }), className)}
+				className={cn(variants({ variant }), className)}
 			>
 				{children}
 			</button>

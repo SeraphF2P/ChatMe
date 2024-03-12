@@ -22,14 +22,14 @@ export const ChatMessages = ({ messages, partner }: ChatMessagesProps) => {
 							{msg.userId === user?.id && (
 								<UserMsg
 									name={user.username}
-									image={user.image || undefined}
+									image={user.image}
 									msg={msg.text}
 								/>
 							)}
 							{msg.userId === partner.id && (
 								<PartnerMsg
 									name={partner.username}
-									image={partner.image || undefined}
+									image={partner.image}
 									msg={msg.text}
 								/>
 							)}
@@ -45,7 +45,7 @@ const UserMsg = ({
 	name,
 }: {
 	msg: string;
-	image?: string;
+	image: string | null;
 	name: string;
 }) => {
 	return (
@@ -63,7 +63,7 @@ const PartnerMsg = ({
 	name,
 }: {
 	msg: string;
-	image?: string;
+	image: string | null;
 	name: string;
 }) => {
 	return (
