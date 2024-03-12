@@ -4,18 +4,12 @@ import { CurrentChatRoom } from "./CurrentChatRoom";
 import { NewChatRoom } from "./NewChatRoom";
 
 export const ChatRoom = () => {
-	const { user, chats } = useUserContext();
+	const { chats } = useUserContext();
 	const [searchParams] = useSearchParams();
 	const chatId = searchParams.get("chatId") ?? "";
-	if (!user) throw new Error("unAuthiraize");
-	const isNewChat = !chats?.some((chat) => chat.chat === chatId);
+	const isNewChat =
+		chatId !== "" && !chats?.some((chat) => chat.chat === chatId);
 	return (
-		<>
-			{isNewChat ? (
-				<NewChatRoom chatId={chatId} />
-			) : (
-				<CurrentChatRoom key={chatId} />
-			)}
-		</>
+		<>{isNewChat ? <NewChatRoom chatId={chatId} /> : <CurrentChatRoom />}</>
 	);
 };

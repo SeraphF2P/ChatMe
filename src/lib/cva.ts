@@ -13,32 +13,19 @@ export const variants = cva(
   {
     variants: {
       variant: {
-        fill: " bg-variant rounded-sm before:absolute before:inset-0 before:bg-white/20  before:opacity-0 before:transition-opacity hover:before:opacity-100 ",
+        fill: " bg-variant rounded-sm  hover:bg-variant/70  ",
         outline:
           " ring-solid  duration-700  ring-2 ring-variant hover:bg-variant active:bg-variant     ",
         ghost:
           "  hover:bg-variant/80   active:bg-variant    ",
         none: "",
       },
-      shape: {
-        pill: "rounded-[50%]",
-        circle: "rounded-full aspect-square",
-        rect: "",
-      },
-      deActivated: {
-        default: "",
-        skelaton:
-          "disabled:text-gray-400 disabled:ring-4 disabled:bg-gray-400 disabled:active:bg-transparent",
-        link: "text-gray-400 ring-gray-400 active:bg-transparent hover:scale-100 cursor-auto",
-      },
+
 
     },
 
     defaultVariants: {
       variant: "fill",
-      shape: "rect",
-      deActivated: "default",
-
     },
   }
 );

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { PulseLoader } from "react-spinners";
 import useSWR from "swr";
+import useSWRImmutable from "swr/immutable";
 import { MessageType } from "../contexts/UserProvider";
 import { useUserContext } from "../hooks/useUserContext";
 import { getChaters } from "../lib/helper";
@@ -10,7 +12,6 @@ import { Icon } from "../ui/Icons";
 import { Avatar } from "./Avatar";
 import { ChatMessages } from "./ChatMessages";
 import { SendMessageBar } from "./SendMessageBar";
-import useSWRImmutable from "swr/immutable";
 export const CurrentChatRoom = () => {
 	const { user } = useUserContext();
 	const [searchParams, setsearchParams] = useSearchParams();
@@ -21,11 +22,10 @@ export const CurrentChatRoom = () => {
 	const getPartner = async () => {
 		return (await supabase.from("User").select("*").eq("id", partnerId)).data;
 	};
-	const {
-		data: partnerData,
-		mutate: mutatePartner,
-		isLoading: isLoadingPartner,
-	} = useSWR("partner", getPartner);
+	const { data: partnerData, mutate: mutatePartner } = useSWR(
+		"partner",
+		getPartner
+	);
 	const partner = partnerData ? partnerData[0] : undefined;
 	const getMessages = async () => {
 		return await supabase
@@ -72,8 +72,8 @@ export const CurrentChatRoom = () => {
 
 	return (
 		<>
-			{isLoadingPartner ? (
-				<div>loading</div>
+			{!partner ? (
+				<PulseLoader color="rgb(var(--neutral-revert))" size={24} />
 			) : (
 				<>
 					<header className="  h-20 border-b-2 border-neutral-revert  bg-neutral flex justify-center w-full items-center     ">

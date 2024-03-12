@@ -15,7 +15,7 @@ export const OffCanves = () => {
 	}, [chatId]);
 	return (
 		<>
-			<AnimatePresence mode="wait">
+			<AnimatePresence mode="wait" presenceAffectsLayout>
 				{isOpen && (
 					<m.section
 						key={chatId}
@@ -43,12 +43,15 @@ export const OffCanves = () => {
 					<m.div
 						initial={{
 							opacity: 0,
+							scale: 0.2,
 						}}
 						animate={{
 							opacity: 1,
+							scale: 1,
 						}}
 						exit={{
 							opacity: 0,
+							scale: 0.2,
 						}}
 						key={"placeholder"}
 						className="  bg-black hidden md:flex justify-center items-center  right-0 md:relative w-full flex-1 h-full "

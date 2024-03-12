@@ -5,13 +5,14 @@ import { cn } from "../lib/cva";
 
 type AvatarProps = {
 	name: string;
-	src: string | undefined;
+	src: string | null;
 	alt?: string;
 };
 
 export const Avatar = ({
 	name,
 	className,
+	src,
 	...props
 }: AvatarProps & ComponentPropsWithoutRef<"div">) => {
 	const firstLetter = name[0];
@@ -21,14 +22,18 @@ export const Avatar = ({
 	return (
 		<div
 			className={cn(
-				" size-20 flex items-center justify-center rounded-full  text-6xl text-neutral-revert capitalize",
+				" relative flex items-center justify-center size-20   rounded-full  text-6xl text-neutral-revert capitalize",
 				className
 			)}
 			style={{
 				backgroundColor: bgColor,
 			}}
 		>
-			{props.src ? <img {...props} alt={`${name} profile image`} /> : name[0]}
+			{src ? (
+				<img {...props} src={src} alt={`${name} profile image`} />
+			) : (
+				name[0]
+			)}
 		</div>
 	);
 };

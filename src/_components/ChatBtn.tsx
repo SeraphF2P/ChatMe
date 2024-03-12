@@ -48,7 +48,7 @@ export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 			{partner && (
 				<Avatar
 					name={partner.username}
-					src={partner?.image || undefined}
+					src={partner?.image}
 					className="size-12 text-3xl"
 				/>
 			)}

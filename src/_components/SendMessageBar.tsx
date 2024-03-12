@@ -15,8 +15,8 @@ export const SendMessageBar = ({
 		inputTag.value = "";
 	};
 	return (
-		<div className=" bg-neutral flex p-4 justify-center gap-4 w-full items-center">
-			<div className="flex w-full max-w-[320px]">
+		<div className=" bg-neutral flex p-4 justify-center  w-full items-center">
+			<div className="flex w-full gap-4 max-w-[320px]">
 				<Input ref={inputRef} type="text" placeholder="message" />
 				<Btn onClick={handleClick} className="size-10 p-0">
 					<Icon.send className="fill-neutral-revert" />

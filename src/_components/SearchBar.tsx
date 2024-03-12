@@ -1,4 +1,8 @@
-import { useDebouncedValue, useInputState } from "@mantine/hooks";
+import {
+	useClickOutside,
+	useDebouncedValue,
+	useInputState,
+} from "@mantine/hooks";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import useSWR from "swr";
@@ -15,12 +19,12 @@ export const SearchBar = () => {
 	const [name, setName] = useInputState("");
 	const [debouncedName] = useDebouncedValue(name, 500);
 	const [_, setsearchParams] = useSearchParams();
-	const fetcher = async (val: string) => {
+	const fetcher = async (name: string) => {
 		return await supabase
 			.from("User")
 			.select(`id , username , image`)
 			.limit(5)
-			.like("username", `%${val}%`)
+			.like("username", `%${name}%`)
 			.neq("username", user?.username);
 	};
 	const { data, isLoading } = useSWR(debouncedName, fetcher, {
@@ -29,6 +33,7 @@ export const SearchBar = () => {
 		revalidateIfStale: false,
 	});
 	const results = data?.data ?? [];
+	const searchResultRef = useClickOutside(() => setisOpen(false));
 	return (
 		<>
 			<div className=" relative w-full max-w-[320px] ">
@@ -38,11 +43,11 @@ export const SearchBar = () => {
 					onChange={async (e) => {
 						if (e.target.value !== "") {
 							setName(e);
-							setisOpen(true);
 						} else {
 							setisOpen(false);
 						}
 					}}
+					onClick={() => setisOpen(true)}
 					className="border-b-2 w-full  border-neutral-revert "
 				/>
 				<div className="absolute right-0 top-0  pointer-events-none -z-10 flex justify-center items-center h-full aspect-square">
@@ -50,8 +55,11 @@ export const SearchBar = () => {
 				</div>
 			</div>
 			{isOpen && (
-				<section className=" flex absolute top-20  justify-center w-full h-40 bg-slate-800   items-center overflow-x-scroll">
-					{!isLoading && user && results.length > 0 && (
+				<section
+					ref={searchResultRef}
+					className="  scrollbar-thin scrollbar-track-white/10  scrollbar-thumb-primary flex absolute top-20  justify-center w-full h-40 bg-slate-800   items-center overflow-x-scroll"
+				>
+					{!isLoading && results.length > 0 && (
 						<ul className=" flex gap-4  items-center px-4       ">
 							{results?.map((chatPartner) => {
 								return (
@@ -60,7 +68,7 @@ export const SearchBar = () => {
 											onPointerDown={() => {
 												setsearchParams(
 													new URLSearchParams({
-														chatId: toChatId(chatPartner.id, user.id),
+														chatId: toChatId(chatPartner.id, user?.id),
 													})
 												);
 												setisOpen(false);
@@ -69,7 +77,6 @@ export const SearchBar = () => {
 											<Avatar
 												name={chatPartner.username}
 												src={chatPartner.image}
-												className="rounded-full size-16 bg-amber-400"
 											/>
 											<span>{chatPartner.username}</span>
 										</button>
