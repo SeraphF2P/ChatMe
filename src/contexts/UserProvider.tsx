@@ -1,6 +1,7 @@
 import { PropsWithChildren, createContext } from "react";
 import useSWR from "swr";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { Loading } from "../pages/Loading";
 import { Tables } from "../server/database.types";
 import { supabase } from "../server/supabase";
 
@@ -16,11 +17,16 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 		return await supabase.from("User").select("*").eq("id", session?.user.id);
 	};
 
-	const { data } = useSWR<{ data: User[] | null }>(session && "user", getUser, {
-		onError: (err) => {
-			console.error(err);
-		},
-	});
+	const { data, isLoading } = useSWR<{ data: User[] | null }>(
+		session && "user",
+		getUser,
+		{
+			onError: (err) => {
+				console.error(err);
+			},
+		}
+	);
+
 	const user = data?.data ? data?.data[0] : null;
 
 	const getChats = async () => {
@@ -42,9 +48,10 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 		return promises.flatMap((res) => res.data) as ChatType[] | undefined;
 	};
 	const { data: chats } = useSWR(user && "chats", getChats);
+
 	return (
 		<UserContext.Provider value={{ user, chats }}>
-			{children}
+			{isLoading ? <Loading /> : children}
 		</UserContext.Provider>
 	);
 };

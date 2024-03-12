@@ -52,36 +52,32 @@ export const Menu = () => {
 							transition={{
 								ease: "easeInOut",
 							}}
-							className=" pt-[10%] absolute   left-0 top-0  z-20 h-screen   right-10 md:right-0  -translate-x-full  bg-primary   opacity-0 shadow"
+							className=" pt-[10%] absolute   left-0 top-0  z-20 h-screen   right-10 md:right-0  -translate-x-full  bg-primary/70 backdrop-blur-sm   opacity-0 shadow"
 						>
 							<div className="   w-full  p-8 flex gap-4 justify-center items-center flex-col    ">
 								<Avatar
-									className=" size-40 text-6xl"
+									className=" size-24 text-6xl"
 									name={user.username}
 									src={user.image}
 								/>
-								<p className=" text-3xl">@{user.username}</p>
+								<p className=" text-lg">@{user.username}</p>
 							</div>
 
 							<ul className=" flex  flex-col items-center gap-4 p-4 ">
-								<li className=" text-xl capitalize">{user.email}</li>
+								<li className="  capitalize">{user.email}</li>
 
 								{session && (
 									<>
-										<li className=" text-xl capitalize">
+										<li className="  capitalize">
 											{session?.user.email_confirmed_at ? (
-												<p className=" font-semibold text-lg text-success">
-													verified
-												</p>
+												<p className=" font-semibold  text-success">verified</p>
 											) : (
-												<p className=" font-semibold text-lg text-alert">
-													uverified
-												</p>
+												<p className=" font-semibold  text-alert">uverified</p>
 											)}
 										</li>
-										<li className="  text-xl capitalize">
+										<li className="  capitalize">
 											<Btn
-												className=" h-12  rounded-full [--variant:223,22,22]"
+												className=" h-10  rounded-full [--variant:223,22,22]"
 												onPointerDown={() => signout()}
 											>
 												sign out

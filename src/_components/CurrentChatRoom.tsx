@@ -22,16 +22,18 @@ export const CurrentChatRoom = () => {
 	const getPartner = async () => {
 		return (await supabase.from("User").select("*").eq("id", partnerId)).data;
 	};
-	const { data: partnerData, mutate: mutatePartner } = useSWR(
-		"partner",
-		getPartner
-	);
+	const {
+		data: partnerData,
+		mutate: mutatePartner,
+		isLoading,
+	} = useSWR("partner", getPartner);
 	const partner = partnerData ? partnerData[0] : undefined;
 	const getMessages = async () => {
 		return await supabase
 			.from("Message")
 			.select("*")
 			.eq("chatId", chatId)
+			.range(0, 20)
 			.order("created_At", { ascending: false });
 	};
 	const { data: msgData } = useSWRImmutable("chatRoom", getMessages, {
@@ -72,6 +74,14 @@ export const CurrentChatRoom = () => {
 
 	return (
 		<>
+			{!isLoading && !partner && (
+				<>
+					<div className="isolate text-center ">
+						<h2 className=" text-4xl">ERROR : 404</h2>
+						<p className=" text-xl">user not found</p>
+					</div>
+				</>
+			)}
 			{!partner ? (
 				<PulseLoader color="rgb(var(--neutral-revert))" size={24} />
 			) : (

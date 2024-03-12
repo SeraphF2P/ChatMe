@@ -5,9 +5,11 @@ import { ChatType, MessageType } from "../contexts/UserProvider";
 import { supabase } from "../server/supabase";
 import { Btn } from "../ui/Btn";
 import { Avatar } from "./Avatar";
+import { useUserContext } from "../hooks/useUserContext";
 
 export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
-	const [_, setsearchParams] = useSearchParams();
+	const [searchParams, setsearchParams] = useSearchParams();
+	const chatIsOpen = searchParams.get("chatId") === chatId;
 	const { data } = useSWRImmutable("lastMessage-" + chatId, async () => {
 		return await supabase
 			.from("Message")
@@ -18,6 +20,7 @@ export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 			.single();
 	});
 	const [lastMsg, setlastMsg] = useState<MessageType>();
+	const { user } = useUserContext();
 	useEffect(() => {
 		const channel = supabase
 			.channel("chatRoom-" + chatId)
@@ -31,6 +34,23 @@ export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 				},
 				(payload) => {
 					setlastMsg(payload.new as MessageType);
+					if (payload.new?.userId !== user.id) {
+						Notification.requestPermission((perm) => {
+							if (perm === "granted") {
+								let notification: Notification | undefined;
+								if (!chatIsOpen && !notification) {
+									notification = new Notification(
+										`${partner.username} has sent you a message`,
+										{
+											tag: partner.id,
+										}
+									);
+								} else if (chatIsOpen && notification) {
+									notification.close();
+								}
+							}
+						});
+					}
 				}
 			)
 			.subscribe();
@@ -38,7 +58,7 @@ export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 		return () => {
 			channel.unsubscribe();
 		};
-	}, [chatId]);
+	}, [chatId, chatIsOpen, partner.id, partner.username, user.id]);
 	const lastMessage = lastMsg ?? data?.data;
 	return (
 		<Btn
