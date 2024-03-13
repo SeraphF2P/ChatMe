@@ -1,5 +1,5 @@
 import { PropsWithChildren, createContext } from "react";
-import useSWR from "swr";
+import useSWRImmutable from "swr/immutable";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { Loading } from "../pages/Loading";
 import { Tables } from "../server/database.types";
@@ -17,7 +17,7 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 		return await supabase.from("User").select("*").eq("id", session?.user.id);
 	};
 
-	const { data, isLoading } = useSWR<{ data: User[] | null }>(
+	const { data, isLoading } = useSWRImmutable<{ data: User[] | null }>(
 		session && "user",
 		getUser,
 		{
@@ -47,11 +47,11 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 		);
 		return promises.flatMap((res) => res.data) as ChatType[] | undefined;
 	};
-	const { data: chats } = useSWR(user && "chats", getChats);
+	const { data: chats } = useSWRImmutable(user && "chats", getChats);
 
 	return (
 		<UserContext.Provider value={{ user, chats }}>
-			{isLoading ? <Loading /> : children}
+			{isLoading && !user ? <Loading /> : children}
 		</UserContext.Provider>
 	);
 };

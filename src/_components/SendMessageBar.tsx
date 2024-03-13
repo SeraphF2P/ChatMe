@@ -9,7 +9,7 @@ export const SendMessageBar = ({
 	const inputRef = useRef<HTMLInputElement>(null);
 	const handleClick = () => {
 		const inputTag = inputRef.current;
-		if (!inputTag) return;
+		if (!inputTag || inputTag.value === "") return;
 		const value = inputTag.value;
 		onSend(value);
 		inputTag.value = "";

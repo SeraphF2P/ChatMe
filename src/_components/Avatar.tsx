@@ -15,7 +15,7 @@ export const Avatar = ({
 	src,
 	...props
 }: AvatarProps & ComponentPropsWithoutRef<"div">) => {
-	const firstLetter = name[0];
+	const firstLetter = name ? name[0] : "uk";
 	const bgColor = "asdfghjklqwerty".includes(firstLetter)
 		? "deeppink"
 		: "darkred";
@@ -32,7 +32,7 @@ export const Avatar = ({
 			{src ? (
 				<img {...props} src={src} alt={`${name} profile image`} />
 			) : (
-				name[0]
+				firstLetter
 			)}
 		</div>
 	);

@@ -1,18 +1,19 @@
 import { AnimatePresence, motion as m } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 import useScrollLock from "../hooks/useScrollLock";
+import { useUserContext } from "../hooks/useUserContext";
 import { ChatRoom } from "./ChatRoom";
-import { useEffect } from "react";
-import { mutate } from "swr";
+import { NewChatRoom } from "./NewChatRoom";
 
 export const OffCanves = () => {
-	const [searchParams] = useSearchParams();
-	const chatId = searchParams.get("chatId") || "";
-	const isOpen = Boolean(chatId);
+	const [searchParams, setsearchParams] = useSearchParams();
+	const chatId = searchParams.get("chatId");
+	const isOpen = chatId !== null;
+	const { chats } = useUserContext();
+
+	const isNewChat = !chats?.some((chat) => chat.chat === chatId);
 	useScrollLock(isOpen);
-	useEffect(() => {
-		mutate("chatRoom");
-	}, [chatId]);
+
 	return (
 		<>
 			<AnimatePresence mode="wait" presenceAffectsLayout>
@@ -36,7 +37,15 @@ export const OffCanves = () => {
 						}}
 						className="fixed  gap-4 flex-col bg-black flex justify-center items-center top-0  right-0  w-full flex-1 h-full z-20  will-change-transform  md:relative "
 					>
-						<ChatRoom key={chatId} />
+						{isNewChat ? (
+							<NewChatRoom chatId={chatId} />
+						) : (
+							<ChatRoom
+								setsearchParams={setsearchParams}
+								key={chatId}
+								chatId={chatId}
+							/>
+						)}
 					</m.section>
 				)}
 				{!isOpen && (

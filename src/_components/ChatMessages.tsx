@@ -3,11 +3,11 @@
 import { Fragment } from "react/jsx-runtime";
 import { MessageType, User } from "../contexts/UserProvider";
 import { useUserContext } from "../hooks/useUserContext";
-import { Avatar } from "./Avatar";
+import { getTimeWithAMPM } from "../lib/helper";
 
 type ChatMessagesProps = {
 	messages: MessageType[];
-	partner: User;
+	partner: User | null;
 };
 
 export const ChatMessages = ({ messages, partner }: ChatMessagesProps) => {
@@ -20,18 +20,10 @@ export const ChatMessages = ({ messages, partner }: ChatMessagesProps) => {
 					return (
 						<Fragment key={msg.id}>
 							{msg.userId === user?.id && (
-								<UserMsg
-									name={user.username}
-									image={user.image}
-									msg={msg.text}
-								/>
+								<UserMsg created_At={msg.created_At} msg={msg.text} />
 							)}
-							{msg.userId === partner.id && (
-								<PartnerMsg
-									name={partner.username}
-									image={partner.image}
-									msg={msg.text}
-								/>
+							{msg.userId === partner?.id && (
+								<PartnerMsg created_At={msg.created_At} msg={msg.text} />
 							)}
 						</Fragment>
 					);
@@ -39,40 +31,27 @@ export const ChatMessages = ({ messages, partner }: ChatMessagesProps) => {
 		</main>
 	);
 };
-const UserMsg = ({
-	msg,
-	image,
-	name,
-}: {
-	msg: string;
-	image: string | null;
-	name: string;
-}) => {
+const UserMsg = ({ msg, created_At }: { msg: string; created_At: string }) => {
+	const timeString = getTimeWithAMPM(created_At);
 	return (
-		<div className=" flex self-end items-center justify-center gap-2 px-4">
-			<div className=" bg-primary h-10 p-2 rounded-full min-w-[40px] flex justify-center items-center   ">
-				<span>{msg}</span>
-			</div>
-			<Avatar className="  size-8 text-2xl " name={name} src={image} />
+		<div className=" bg-primary flex-wrap mx-6 p-2 px-4 rounded-3xl rounded-br-sm min-w-[40px] flex justify-end items-center     self-end ">
+			<p>{msg}</p>
+			<p className=" whitespace-nowrap  px-2 ">{timeString}</p>
 		</div>
 	);
 };
 const PartnerMsg = ({
 	msg,
-	image,
-	name,
+	created_At,
 }: {
 	msg: string;
-	image: string | null;
-	name: string;
+	created_At: string;
 }) => {
+	const timeString = getTimeWithAMPM(created_At);
 	return (
-		<div className=" flex self-start flex-row-reverse items-center gap-2 px-4">
-			<div className=" bg-neutral h-10 p-2 rounded-full min-w-[40px] flex justify-center items-center   ">
-				<span>{msg}</span>
-			</div>
-
-			<Avatar className=" size-8 text-2xl " name={name} src={image} />
+		<div className="bg-neutral flex-wrap mx-6 p-2 px-4 rounded-3xl rounded-bl-sm min-w-[40px] flex justify-end items-center    self-start ">
+			<p>{msg}</p>
+			<p className=" whitespace-nowrap  px-2 ">{timeString}</p>
 		</div>
 	);
 };

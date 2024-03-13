@@ -12,6 +12,7 @@ import { supabase } from "../server/supabase";
 import { Icon } from "../ui/Icons";
 import { Input } from "../ui/Input";
 import { Avatar } from "./Avatar";
+import { PulseLoader } from "react-spinners";
 
 export const SearchBar = () => {
 	const { user } = useUserContext();
@@ -43,11 +44,11 @@ export const SearchBar = () => {
 					onChange={async (e) => {
 						if (e.target.value !== "") {
 							setName(e);
+							setisOpen(true);
 						} else {
 							setisOpen(false);
 						}
 					}}
-					onClick={() => setisOpen(true)}
 					className="border-b-2 w-full  border-neutral-revert "
 				/>
 				<div className="absolute right-0 top-0  pointer-events-none -z-10 flex justify-center items-center h-full aspect-square">
@@ -85,9 +86,7 @@ export const SearchBar = () => {
 							})}
 						</ul>
 					)}
-					{isLoading && (
-						<div className=" flex gap-4  items-center px-4 ">loading....</div>
-					)}
+					{isLoading && <PulseLoader color="rgb(var(--neutral-revert))" />}
 					{!isLoading && results.length === 0 && (
 						<div className=" flex gap-4  items-center px-4 ">no user found</div>
 					)}

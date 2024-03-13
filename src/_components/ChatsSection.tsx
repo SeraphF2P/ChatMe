@@ -1,5 +1,3 @@
-"use client";
-
 import { useUserContext } from "../hooks/useUserContext";
 import { Icon } from "../ui/Icons";
 import { ChatBtn } from "./ChatBtn";
