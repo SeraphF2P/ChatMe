@@ -1,7 +1,6 @@
 import { Session } from "@supabase/supabase-js";
 import { PropsWithChildren, createContext, useEffect, useState } from "react";
 import { supabase } from "../server/supabase";
-import { ErrorBoundary } from "../ui/ErrorBoundary";
 
 export const AuthContext = createContext<{
 	session: Session | null;
@@ -27,10 +26,6 @@ export const AuthanticationProvider = ({ children }: PropsWithChildren) => {
 	}, []);
 
 	return (
-		<AuthContext.Provider value={{ session }}>
-			<ErrorBoundary FallbackComponent={() => <div>asd</div>}>
-				{children}
-			</ErrorBoundary>
-		</AuthContext.Provider>
+		<AuthContext.Provider value={{ session }}>{children}</AuthContext.Provider>
 	);
 };

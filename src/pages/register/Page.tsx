@@ -5,7 +5,6 @@ import { SignUpForm } from "./_components/SignUpForm";
 
 export default function Register() {
 	const [hasAccount, sethasAccount] = useState(false);
-
 	return (
 		<AnimatePresence>
 			{hasAccount ? (

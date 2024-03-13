@@ -18,8 +18,8 @@ export const ChatsSection = () => {
 					{chats.length == 0 && (
 						<div className="  p-4 bg-primary text-center space-y-4 capitalize ">
 							<Icon.exclamation className="size-20 mx-auto" />
-							<p className="text-lg">don't have anyone to chat with ?</p>
-							<p className="text-lg">search for a friend and just say hi!</p>
+							<p className="text-base">don't have anyone to chat with ?</p>
+							<p className="text-base">search for a friend and just say hi!</p>
 						</div>
 					)}
 				</>

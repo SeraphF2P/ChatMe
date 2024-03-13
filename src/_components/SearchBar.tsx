@@ -25,7 +25,7 @@ export const SearchBar = () => {
 			.from("User")
 			.select(`id , username , image`)
 			.limit(5)
-			.like("username", `%${name}%`)
+			.ilike("username", `%${name}%`)
 			.neq("username", user?.username);
 	};
 	const { data, isValidating } = useSWR(debouncedName, fetcher, {

@@ -64,6 +64,7 @@ export const LoginForm = ({
 					onPointerDown={() => {
 						sethasAccount(false);
 					}}
+					className="p-1 text-base my-1"
 				>
 					don't have an account ? sign up
 				</Btn>

@@ -64,7 +64,7 @@ export const Menu = () => {
 							</div>
 
 							<ul className=" flex  flex-col items-center gap-4 p-4 ">
-								<li className="  capitalize">{user.email}</li>
+								<li>{user.email}</li>
 
 								{session && (
 									<>

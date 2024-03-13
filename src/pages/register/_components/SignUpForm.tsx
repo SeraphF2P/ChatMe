@@ -45,7 +45,7 @@ export const SignUpForm = ({
 	return (
 		<form
 			onSubmit={handleSubmit(submitHandler)}
-			className=" flex flex-col text-neutral-revert space-y-4 py-4"
+			className=" flex flex-col  text-neutral-revert space-y-4 py-4"
 		>
 			<Input
 				autoComplete="username"
@@ -77,6 +77,7 @@ export const SignUpForm = ({
 					onPointerDown={() => {
 						sethasAccount(true);
 					}}
+					className="p-1 text-base my-1"
 				>
 					already have an account ? log in
 				</Btn>

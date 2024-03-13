@@ -1,4 +1,4 @@
-import { PropsWithChildren, createContext } from "react";
+import { PropsWithChildren, createContext, useEffect } from "react";
 import useSWRImmutable from "swr/immutable";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { Loading } from "../pages/Loading";
@@ -46,8 +46,33 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 		);
 		return promises.flatMap((res) => res.data) as ChatType[] | undefined;
 	};
-	const { data: chats } = useSWRImmutable(user && "chats", getChats);
+	const { data: chats, mutate: mutateChats } = useSWRImmutable(
+		user && "chats",
+		getChats
+	);
+	useEffect(() => {
+		if (!user) return;
+		const channel = supabase
+			.channel(user.id + "-" + "chats")
+			.on(
+				"postgres_changes",
+				{
+					event: "INSERT",
+					schema: "public",
+					table: `_chats`,
+					filter: `userId=eq.${user?.id}`,
+				},
+				() => {
+					console.log("chats");
+					mutateChats();
+				}
+			)
+			.subscribe();
 
+		return () => {
+			channel.unsubscribe();
+		};
+	}, [mutateChats, user?.id]);
 	return (
 		<UserContext.Provider value={{ user, chats }}>
 			{isValidating && !user ? <Loading /> : children}
