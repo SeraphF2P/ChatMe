@@ -20,7 +20,6 @@ export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 	});
 	const [lastMsg, setlastMsg] = useState<MessageType>();
 	const { user } = useUserContext();
-	const nav = useNavigate();
 	useEffect(() => {
 		const channel = supabase
 			.channel("chatRoom-" + chatId)
