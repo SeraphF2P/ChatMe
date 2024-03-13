@@ -43,7 +43,7 @@ export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 		return () => {
 			channel.unsubscribe();
 		};
-	}, [chatId, partner.id, partner.username, searchParams, user.id]);
+	}, [chatId]);
 	const lastMessage = lastMsg ?? data?.data;
 
 	useEffect(() => {
@@ -89,7 +89,7 @@ export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 				</p>
 				<div className="  h-5 flex   ">
 					{lastMessage?.text && (
-						<p className=" capitalize truncate max-w-[24ch]  text-left text-sm text-neutral-revert/80">
+						<p className="  truncate max-w-[24ch]  text-left text-sm text-neutral-revert/80">
 							{`${
 								lastMessage?.userId === partner.id ? partner.username : "you"
 							} : ${lastMessage?.text}`}
