@@ -6,6 +6,7 @@ import { useUserContext } from "../hooks/useUserContext";
 import { supabase } from "../server/supabase";
 import { Btn } from "../ui/Btn";
 import { Avatar } from "./Avatar";
+import { Icon } from "../ui/Icons";
 
 export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 	const [searchParams, setsearchParams] = useSearchParams();
@@ -20,6 +21,7 @@ export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 	});
 	const [lastMsg, setlastMsg] = useState<MessageType>();
 	const { user } = useUserContext();
+	const [hasNewMessage, sethasNewMessage] = useState(false);
 	useEffect(() => {
 		const channel = supabase
 			.channel("chatRoom-" + chatId)
@@ -47,6 +49,9 @@ export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 	useEffect(() => {
 		const chatIsOpen = searchParams.get("chatId") === chatId;
 		if (lastMsg && lastMsg?.userId !== user.id) {
+			if (!chatIsOpen) {
+				sethasNewMessage(true);
+			}
 			Notification.requestPermission().then((perm) => {
 				if (perm === "granted") {
 					let notification: Notification | undefined;
@@ -65,7 +70,10 @@ export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 	}, [chatId, lastMsg, partner.username, searchParams, user.id]);
 	return (
 		<Btn
-			onClick={() => setsearchParams(new URLSearchParams({ chatId }))}
+			onClick={() => {
+				setsearchParams(new URLSearchParams({ chatId }));
+				sethasNewMessage(false);
+			}}
 			className="  flex  text-neutral-revert justify-start gap-4 px-4 hover:bg-neutral-hover h-20 bg-neutral w-full"
 		>
 			{partner && (
@@ -75,11 +83,11 @@ export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 					className="size-12 text-3xl aspect-square"
 				/>
 			)}
-			<div>
+			<div className=" w-full">
 				<p className=" capitalize truncate text-left text-lg">
 					{partner?.username}
 				</p>
-				<div className="  h-5 flex">
+				<div className="  h-5 flex   ">
 					{lastMessage?.text && (
 						<p className=" capitalize truncate max-w-[24ch]  text-left text-sm text-neutral-revert/80">
 							{`${
@@ -89,6 +97,11 @@ export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 					)}
 				</div>
 			</div>
+			{hasNewMessage && (
+				<span>
+					<Icon.exclamation className=" size-6 fill-alert" />
+				</span>
+			)}
 		</Btn>
 	);
 };

@@ -4,7 +4,6 @@ import { useAuthContext } from "../hooks/useAuthContext";
 import { Loading } from "../pages/Loading";
 import { Tables } from "../server/database.types";
 import { supabase } from "../server/supabase";
-import { Navigate } from "react-router-dom";
 
 export type User = Tables<"User">;
 export type ChatType = Omit<Tables<"_chats">, "user"> & { user: User };
@@ -60,11 +59,24 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 					event: "INSERT",
 					schema: "public",
 					table: `_chats`,
-					filter: `userId=eq.${user?.id}`,
+					filter: `user=eq.${user?.id}`,
 				},
 				() => {
-					console.log("chats");
 					mutateChats();
+					Notification.requestPermission().then((perm) => {
+						if (perm === "granted") {
+							let notification: Notification | undefined;
+							if (!notification) {
+								console.log("notify");
+								notification = new Notification(`message received`, {
+									tag: "new chat mate!",
+									body: `someone want to chat with you`,
+								});
+							} else if (notification) {
+								notification.close();
+							}
+						}
+					});
 				}
 			)
 			.subscribe();
@@ -72,11 +84,10 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 		return () => {
 			channel.unsubscribe();
 		};
-	}, [mutateChats, user?.id]);
+	}, [mutateChats, user]);
 	return (
 		<UserContext.Provider value={{ user, chats }}>
 			{isValidating && !user ? <Loading /> : children}
-			{!isValidating && !user && <Navigate to={"/register"} />}
 		</UserContext.Provider>
 	);
 };

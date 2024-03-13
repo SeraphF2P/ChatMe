@@ -33,8 +33,8 @@ const UserMsg = ({ msg, created_At }: { msg: string; created_At: string }) => {
 	const timeString = getTimeWithAMPM(created_At);
 	return (
 		<div className=" bg-primary flex-wrap mx-6 p-2 px-4 rounded-3xl rounded-br-sm min-w-[40px] flex justify-end items-center     self-end ">
-			<p>{msg}</p>
-			<p className=" whitespace-nowrap  px-2 ">{timeString}</p>
+			<p className=" text-base">{msg}</p>
+			<p className=" whitespace-nowrap text-sm  px-2 ">{timeString}</p>
 		</div>
 	);
 };
@@ -48,8 +48,8 @@ const PartnerMsg = ({
 	const timeString = getTimeWithAMPM(created_At);
 	return (
 		<div className="bg-neutral flex-wrap mx-6 p-2 px-4 rounded-3xl rounded-bl-sm min-w-[40px] flex justify-end items-center    self-start ">
-			<p>{msg}</p>
-			<p className=" whitespace-nowrap  px-2 ">{timeString}</p>
+			<p className=" text-base">{msg}</p>
+			<p className=" whitespace-nowrap text-sm  px-2 ">{timeString}</p>
 		</div>
 	);
 };

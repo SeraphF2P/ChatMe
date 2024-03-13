@@ -38,7 +38,7 @@ export const NewChatRoom = ({ chatId }: NewChatRoomProps) => {
 	return (
 		<>
 			<img
-				className=" hidden w-full -z-10 md:block absolute inset-0 object-cover h-full mix-blend-luminosity  opacity-20"
+				className="  w-full -z-10 md:block absolute inset-0 object-cover h-full mix-blend-luminosity  opacity-20"
 				src="/doodle-2.webp"
 				alt="backfround"
 			/>
