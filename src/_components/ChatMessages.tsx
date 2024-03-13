@@ -1,5 +1,3 @@
-"use client";
-
 import { Fragment } from "react/jsx-runtime";
 import { MessageType, User } from "../contexts/UserProvider";
 import { useUserContext } from "../hooks/useUserContext";

@@ -19,12 +19,10 @@ export const App = () => {
 			children: [
 				{
 					path: "/register",
-					// element: <Register />,
 					element: session ? <Navigate to={"/"} /> : <Register />,
 				},
 				{
 					path: "/",
-					// element: <Home />,
 					element: session ? <Home /> : <Navigate to={"/register"} />,
 				},
 			],

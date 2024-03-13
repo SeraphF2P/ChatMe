@@ -28,7 +28,7 @@ export const SearchBar = () => {
 			.like("username", `%${name}%`)
 			.neq("username", user?.username);
 	};
-	const { data, isLoading } = useSWR(debouncedName, fetcher, {
+	const { data, isValidating } = useSWR(debouncedName, fetcher, {
 		keepPreviousData: true,
 		refreshInterval: 0,
 		revalidateIfStale: false,
@@ -60,7 +60,7 @@ export const SearchBar = () => {
 					ref={searchResultRef}
 					className="  scrollbar-thin scrollbar-track-white/10  scrollbar-thumb-primary flex absolute top-20  justify-center w-full h-40 bg-slate-800   items-center overflow-x-scroll"
 				>
-					{!isLoading && results.length > 0 && (
+					{!isValidating && results.length > 0 && (
 						<ul className=" flex gap-4  items-center px-4       ">
 							{results?.map((chatPartner) => {
 								return (
@@ -86,8 +86,8 @@ export const SearchBar = () => {
 							})}
 						</ul>
 					)}
-					{isLoading && <PulseLoader color="rgb(var(--neutral-revert))" />}
-					{!isLoading && results.length === 0 && (
+					{isValidating && <PulseLoader color="rgb(var(--neutral-revert))" />}
+					{!isValidating && results.length === 0 && (
 						<div className=" flex gap-4  items-center px-4 ">no user found</div>
 					)}
 				</section>

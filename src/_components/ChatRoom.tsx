@@ -26,7 +26,7 @@ export const ChatRoom = ({
 	const getPartner = async () => {
 		return (await supabase.from("User").select("*").eq("id", partnerId)).data;
 	};
-	const { data: partnerData, isLoading } = useSWRImmutable(
+	const { data: partnerData, isValidating } = useSWRImmutable(
 		"partner" + "-" + partnerId,
 		getPartner
 	);
@@ -96,7 +96,7 @@ export const ChatRoom = ({
 		<>
 			{chatId != null && (
 				<>
-					{!isLoading && !partner && (
+					{!isValidating && !partner && (
 						<>
 							<div className="isolate text-center ">
 								<h2 className=" text-4xl">ERROR : 404</h2>
@@ -104,7 +104,7 @@ export const ChatRoom = ({
 							</div>
 						</>
 					)}
-					{isLoading && !partner ? (
+					{isValidating && !partner ? (
 						<PulseLoader color="rgb(var(--neutral-revert))" size={24} />
 					) : (
 						<>

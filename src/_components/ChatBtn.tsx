@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import useSWRImmutable from "swr/immutable";
 import { ChatType, MessageType } from "../contexts/UserProvider";
+import { useUserContext } from "../hooks/useUserContext";
 import { supabase } from "../server/supabase";
 import { Btn } from "../ui/Btn";
 import { Avatar } from "./Avatar";
-import { useUserContext } from "../hooks/useUserContext";
 
 export const ChatBtn = ({ chat: chatId, user: partner }: ChatType) => {
 	const [searchParams, setsearchParams] = useSearchParams();
